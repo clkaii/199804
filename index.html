@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>1998 財富觀測站 | 組織發展團隊</title>
+    <style>
+        :root {
+            --primary: #e67e22;
+            --secondary: #34495e;
+            --bg: #fdf2e9;
+            --white: #ffffff;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+
+        body {
+            font-family: -apple-system, "PingFang TC", "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--secondary);
+        }
+
+        .phone-container {
+            width: 100%;
+            max-width: 400px;
+            background: var(--white);
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+            position: relative;
+            margin: 10px;
+        }
+
+        .header-bar {
+            background: #fff;
+            padding: 15px;
+            border-bottom: 2px solid var(--secondary);
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .content {
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .avatar-box {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            border-radius: 20px;
+            padding: 15px;
+            border: 1px solid #eee;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .avatar {
+            width: 70px;
+            height: 70px;
+            background: #eee;
+            border-radius: 50%;
+            margin-right: 15px;
+            flex-shrink: 0;
+            background-image: url('https://cdn-icons-png.flaticon.com/512/4042/4042356.png');
+            background-size: cover;
+        }
+
+        .bubble {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        .input-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            font-size: 16px;
+            outline: none;
+        }
+        
+        .input-group input:focus {
+            border-color: var(--primary);
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(230, 126, 34, 0.3);
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-start:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
+
+        .footer {
+            padding: 20px;
+            font-size: 0.7rem;
+            color: #999;
+            text-align: center;
+            background: #fafafa;
+        }
+    </style>
+</head>
+<body>
+
+<div class="phone-container">
+    <div class="header-bar">R線重點複習：1998 財富觀測站</div>
+    
+    <div class="content">
+        <div class="avatar-box">
+            <div class="avatar"></div>
+            <div class="bubble">
+                你知道「1998」背後的核心邏輯嗎？這不只是一個數字，更是您人生夢想與現實支出的動態平衡點。
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>通訊處名稱</label>
+            <input type="text" id="unit" placeholder="例如：凱基通訊處" oninput="check()">
+        </div>
+
+        <div class="input-group">
+            <label>填寫人姓名</label>
+            <input type="text" id="name" placeholder="請輸入您的姓名" oninput="check()">
+        </div>
+
+        <button class="btn-start" id="btn" onclick="start()" disabled>✦ 開始您的財富人生試算 ✦</button>
+    </div>
+
+    <div class="footer">
+        企劃製作：組織發展團隊 (V4 版) | Peak Awards
+    </div>
+</div>
+
+<script>
+    function check() {
+        const u = document.getElementById('unit').value.trim();
+        const n = document.getElementById('name').value.trim();
+        document.getElementById('btn').disabled = !(u && n);
+    }
+
+    function start() {
+        // 這裡預留跳轉邏輯，目前先以彈窗模擬身分確認
+        const name = document.getElementById('name').value;
+        const unit = document.getElementById('unit').value;
+        alert('身分確認：' + unit + ' - ' + name + '\n系統即將開啟互動試算！');
+        // 如果您希望直接跳轉到 199803.html，請取消下面這行的註解：
+        // window.location.href = '199803.html';
+    }
+</script>
+
+</body>
+</html>
