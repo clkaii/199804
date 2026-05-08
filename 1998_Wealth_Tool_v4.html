@@ -1,0 +1,404 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>1998 財富人生互動試算</title>
+    <style>
+        :root {
+            --primary: #e67e22;
+            --secondary: #34495e;
+            --bg: #f8f9fa;
+            --card: #ffffff;
+            --text: #2c3e50;
+            --accent: #d35400;
+            --danger: #c0392b;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--card);
+            padding: 25px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { color: var(--primary); margin: 5px 0; font-size: 1.6rem; }
+        .header p { color: #7f8c8d; font-size: 0.9rem; margin: 0; }
+
+        .progress-container {
+            height: 6px;
+            background: #eee;
+            border-radius: 3px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .step { display: none; min-height: 300px; }
+        .step.active { display: block; animation: slideIn 0.4s ease-out; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .question-box { margin-bottom: 25px; }
+        .question-title { font-size: 1.15rem; font-weight: 600; line-height: 1.5; margin-bottom: 15px; }
+        
+        .input-field {
+            margin-bottom: 20px;
+        }
+        .input-field label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+        .input-field input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .input-display {
+            text-align: center;
+            padding: 15px;
+            background: #fff8f2;
+            border-radius: 15px;
+            margin-bottom: 15px;
+        }
+        .current-value { font-size: 1.8rem; font-weight: 800; color: var(--accent); }
+        .sub-value { font-size: 0.9rem; color: #7f8c8d; margin-top: 5px; }
+
+        input[type="range"] {
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+            margin: 20px 0;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 25px; height: 25px;
+            background: var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .btn-group { display: flex; gap: 12px; margin-top: 10px; }
+        button {
+            flex: 1; padding: 15px; border: none; border-radius: 12px;
+            font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.2s;
+        }
+        .btn-next { background: var(--primary); color: white; }
+        .btn-prev { background: #f0f0f0; color: #7f8c8d; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+
+        /* Table Style */
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            text-align: left;
+        }
+        .summary-table th, .summary-table td {
+            padding: 8px;
+            border: 1px solid #eee;
+        }
+        .summary-table th { background: #fdf2e9; color: var(--secondary); }
+
+        .result-card { text-align: center; }
+        .result-circle {
+            width: 160px; height: 160px;
+            border: 8px solid var(--primary);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .result-amount { font-size: 1.6rem; font-weight: 800; color: var(--accent); }
+        .insight-box {
+            background: #fdf2e9;
+            padding: 15px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            text-align: left;
+            border-left: 4px solid var(--primary);
+            margin-bottom: 15px;
+        }
+        .summary-line {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #34495e;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+
+    <div class="header">
+        <h1>1998 互動觀測站</h1>
+        <p id="stepIndicator">0 / 10</p>
+    </div>
+
+    <!-- Step 0: Basic Info -->
+    <div class="step active" id="step0">
+        <div class="question-box">
+            <div class="question-title">請輸入基本資料以開始試算</div>
+            <div class="input-field">
+                <label>通訊處名稱</label>
+                <input type="text" id="unitName" placeholder="例如：凱基通訊處" oninput="checkBasicInfo()">
+            </div>
+            <div class="input-field">
+                <label>填寫人姓名</label>
+                <input type="text" id="userName" placeholder="請輸入姓名" oninput="checkBasicInfo()">
+            </div>
+            <p style="color:#7f8c8d; font-size:0.8rem;">* 系統將根據以上資料產出專屬整理表</p>
+        </div>
+        <div class="btn-group">
+            <button class="btn-next" id="startBtn" onclick="goToStep(1)" disabled>進入試算</button>
+        </div>
+    </div>
+
+    <!-- Step 1: Intro -->
+    <div class="step" id="step1">
+        <div class="question-box">
+            <div class="question-title">你知道「1998」是什麼嗎？</div>
+            <p>假設從 25 歲工作到 55 歲（30年），起薪 3 萬，平均年收 14 個月且每年微幅調薪...</p>
+            <div class="input-display">
+                <div class="result-label">一輩子賺進總額</div>
+                <div class="current-value">1,998 萬</div>
+            </div>
+        </div>
+        <div class="btn-group"><button class="btn-next" onclick="goToStep(2)">開始扣除夢想</button></div>
+    </div>
+
+    <!-- Step 2: Living -->
+    <div class="step" id="step2">
+        <div class="question-box">
+            <div class="question-title">1. 基本生活開銷</div>
+            <div class="input-display">
+                <div class="current-value" id="disp2">15,000</div>
+                <div class="sub-value">元 / 每月</div>
+            </div>
+            <input type="range" min="10000" max="50000" step="1000" value="15000" oninput="updateVal(2, this.value)">
+            <div class="summary-line">
+                <span>每年：<span id="yearly2">18</span> 萬</span>
+                <span>30年合計：<span id="sum2">540</span> 萬</span>
+            </div>
+        </div>
+        <div class="btn-group"><button class="btn-prev" onclick="goToStep(1)">上一步</button><button class="btn-next" onclick="goToStep(3)">下一步</button></div>
+    </div>
+
+    <!-- Step 3: Car Purchase -->
+    <div class="step" id="step3">
+        <div class="question-box">
+            <div class="question-title">2. 買車預算</div>
+            <div class="input-display">
+                <div class="current-value" id="disp3">80</div>
+                <div class="sub-value">萬 / 每台</div>
+            </div>
+            <input type="range" min="0" max="300" step="10" value="80" oninput="updateVal(3, this.value)">
+            <p class="sub-value" style="text-align:center">30年換3台：<span id="sum3">240</span> 萬</p>
+        </div>
+        <div class="btn-group"><button class="btn-prev" onclick="goToStep(2)">上一步</button><button class="btn-next" onclick="goToStep(4)">下一步</button></div>
+    </div>
+
+    <!-- Step 4: Car Maint -->
+    <div class="step" id="step4">
+        <div class="question-box">
+            <div class="question-title">3. 養車固定成本</div>
+            <div class="input-display"><div class="current-value" id="disp4">10,000</div><div class="sub-value">元 / 每月</div></div>
+            <input type="range" min="0" max="30000" step="500" value="10000" oninput="updateVal(4, this.value)">
+            <p class="sub-value" style="text-align:center">30年合計：<span id="sum4">360</span> 萬</p>
+        </div>
+        <div class="btn-group"><button class="btn-prev" onclick="goToStep(3)">上一步</button><button class="btn-next" onclick="goToStep(5)">下一步</button></div>
+    </div>
+
+    <!-- Step 5: Travel -->
+    <div class="step" id="step5">
+        <div class="question-box">
+            <div class="question-title">4. 年度旅遊規劃</div>
+            <div class="input-display"><div class="current-value" id="disp5">50,000</div><div class="sub-value">元 / 每年</div></div>
+            <input type="range" min="0" max="300000" step="5000" value="50000" oninput="updateVal(5, this.value)">
+            <p class="sub-value" style="text-align:center">30年合計：<span id="sum5">150</span> 萬</p>
+        </div>
+        <div class="btn-group"><button class="btn-prev" onclick="goToStep(4)">上一步</button><button class="btn-next" onclick="goToStep(6)">下一步</button></div>
+    </div>
+
+    <!-- Step 6: House -->
+    <div class="step" id="step6">
+        <div class="question-box">
+            <div class="question-title">5. 購屋成家預算</div>
+            <div class="input-display"><div class="current-value" id="disp6">1,500</div><div class="sub-value">萬</div></div>
+            <input type="range" min="0" max="5000" step="50" value="1500" oninput="updateVal(6, this.value)">
+        </div>
+        <div class="btn-group"><button class="btn-prev" onclick="goToStep(5)">上一步</button><button class="btn-next" onclick="goToStep(7)">下一步</button></div>
+    </div>
+
+    <!-- Step 7: Kids -->
+    <div class="step" id="step7">
+        <div class="question-box">
+            <div class="question-title">6. 養育下一代</div>
+            <div class="input-display"><div class="current-value" id="disp7">500</div><div class="sub-value">萬</div></div>
+            <input type="range" min="0" max="2000" step="50" value="500" oninput="updateVal(7, this.value)">
+        </div>
+        <div class="btn-group"><button class="btn-prev" onclick="goToStep(6)">上一步</button><button class="btn-next" onclick="goToStep(8)">下一步</button></div>
+    </div>
+
+    <!-- Step 8: Retirement -->
+    <div class="step" id="step8">
+        <div class="question-box">
+            <div class="question-title">7. 退休生活準備</div>
+            <div class="input-display">
+                <div class="current-value" id="disp8">30,000</div>
+                <div class="sub-value">元 / 每月</div>
+            </div>
+            <input type="range" min="10000" max="150000" step="1000" value="30000" oninput="updateVal(8, this.value)">
+            <div class="summary-line">
+                <span>每年：<span id="yearly8">36</span> 萬</span>
+                <span>30年合計：<span id="sum8">1080</span> 萬</span>
+            </div>
+        </div>
+        <div class="btn-group"><button class="btn-prev" onclick="goToStep(7)">上一步</button><button class="btn-next" onclick="calculateResult()">結算資產</button></div>
+    </div>
+
+    <!-- Step 9: Results & Summary Table -->
+    <div class="step" id="step9">
+        <div class="result-card">
+            <p style="font-size: 0.9rem; color: var(--secondary); margin-bottom:5px;"><span id="resUnit"></span> / <span id="resUser"></span></p>
+            <div class="result-circle">
+                <div class="result-label">最終餘額</div>
+                <div class="result-amount" id="finalVal">0</div>
+                <div class="result-label">萬</div>
+            </div>
+            <div class="insight-box" id="insightBox"></div>
+            
+            <h3 style="font-size: 1rem; color: var(--secondary); margin: 20px 0 10px;">📊 財富人生整理表</h3>
+            <table class="summary-table">
+                <thead><tr><th>項目</th><th>預估金額 (萬)</th></tr></thead>
+                <tbody id="tableBody"></tbody>
+                <tfoot><tr style="background:#f8f9fa; font-weight:bold;"><td>總收入</td><td>1,998</td></tr></tfoot>
+            </table>
+
+            <div style="margin-top: 20px; font-size: 0.75rem; color: #bdc3c7; border-top: 1px solid #eee; padding-top: 10px;">
+                企劃製作：KGI Life 組織發展團隊
+            </div>
+        </div>
+        <div class="btn-group" style="margin-top:20px;">
+            <button class="btn-prev" onclick="location.reload()">重新試算</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentStep = 0;
+    const totalSteps = 10;
+    const baseIncome = 1998;
+    let vals = { 2: 15000, 3: 80, 4: 10000, 5: 50000, 6: 1500, 7: 500, 8: 30000 };
+
+    function checkBasicInfo() {
+        const uName = document.getElementById('unitName').value;
+        const pName = document.getElementById('userName').value;
+        document.getElementById('startBtn').disabled = !(uName.trim() && pName.trim());
+    }
+
+    function updateVal(step, val) {
+        vals[step] = parseInt(val);
+        document.getElementById('disp' + step).innerText = vals[step].toLocaleString();
+        if(step === 2) {
+            document.getElementById('yearly2').innerText = Math.round(vals[2]*12/10000 * 10) / 10;
+            document.getElementById('sum2').innerText = Math.round(vals[2]*12*30/10000);
+        }
+        if(step === 3) document.getElementById('sum3').innerText = vals[3]*3;
+        if(step === 4) document.getElementById('sum4').innerText = Math.round(vals[4]*12*30/10000);
+        if(step === 5) document.getElementById('sum5').innerText = Math.round(vals[5]*30/10000);
+        if(step === 8) {
+            document.getElementById('yearly8').innerText = Math.round(vals[8]*12/10000 * 10) / 10;
+            document.getElementById('sum8').innerText = Math.round(vals[8]*12*30/10000);
+        }
+    }
+
+    function goToStep(n) {
+        document.getElementById('step' + currentStep).classList.remove('active');
+        currentStep = n;
+        document.getElementById('step' + currentStep).classList.add('active');
+        document.getElementById('progressBar').style.width = (currentStep / (totalSteps-1) * 100) + '%';
+        document.getElementById('stepIndicator').innerText = currentStep + ' / ' + (totalSteps-1);
+    }
+
+    function calculateResult() {
+        document.getElementById('resUnit').innerText = document.getElementById('unitName').value;
+        document.getElementById('resUser').innerText = document.getElementById('userName').value;
+
+        const c2 = Math.round(vals[2]*12*30/10000);
+        const c3 = vals[3]*3;
+        const c4 = Math.round(vals[4]*12*30/10000);
+        const c5 = Math.round(vals[5]*30/10000);
+        const c6 = vals[6];
+        const c7 = vals[7];
+        const c8 = Math.round(vals[8]*12*30/10000);
+        
+        const totalCost = c2 + c3 + c4 + c5 + c6 + c7 + c8;
+        const remaining = baseIncome - totalCost;
+        
+        document.getElementById('finalVal').innerText = remaining.toLocaleString();
+        document.getElementById('finalVal').style.color = remaining < 0 ? "var(--danger)" : "var(--accent)";
+
+        const tableData = [
+            ["基本生活開銷", c2], ["買車預算", c3], ["養車成本", c4],
+            ["旅遊規劃", c5], ["購屋預算", c6], ["子女教育", c7], ["退休準備", c8]
+        ];
+        
+        let html = "";
+        tableData.forEach(row => { html += `<tr><td>${row[0]}</td><td>${row[1]}</td></tr>`; });
+        document.getElementById('tableBody').innerHTML = html;
+
+        const insightEl = document.getElementById('insightBox');
+        if (remaining < 0) {
+            insightEl.innerHTML = `⚠️ <b>資產負債！</b><br>目前的理想生活總支出為 ${totalCost} 萬，已超出收入。這表示需要更早開始進行資產撥備或調整支出結構。`;
+        } else {
+            insightEl.innerHTML = `✅ <b>餘額緊迫。</b><br>雖然剩餘 ${remaining} 萬，但尚未計入通膨（30年後1元購買力可能減半）。建議透過專業規劃來守護財富。`;
+        }
+        goToStep(9);
+    }
+</script>
+</body>
+</html>
