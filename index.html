@@ -4,13 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>1998 財富觀測站 | 組織發展團隊</title>
+    <title>1998 財富人生觀測站</title>
     <style>
         :root {
             --primary: #e67e22;
             --secondary: #34495e;
             --bg: #fdf2e9;
             --white: #ffffff;
+            --accent: #f39c12;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
@@ -21,20 +22,22 @@
             margin: 0;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             min-height: 100vh;
             color: var(--secondary);
+            padding: 10px;
         }
 
         .phone-container {
             width: 100%;
-            max-width: 400px;
+            max-width: 414px;
             background: var(--white);
             border-radius: 30px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             overflow: hidden;
             position: relative;
-            margin: 10px;
+            display: flex;
+            flex-direction: column;
         }
 
         .header-bar {
@@ -46,11 +49,11 @@
             text-align: center;
         }
 
-        .content {
-            padding: 30px 20px;
-            text-align: center;
-        }
+        .step { display: none; padding: 25px 20px; }
+        .step.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* 首頁樣式 */
         .avatar-box {
             display: flex;
             align-items: center;
@@ -61,74 +64,48 @@
             margin-bottom: 25px;
             text-align: left;
         }
-
         .avatar {
-            width: 70px;
-            height: 70px;
-            background: #eee;
-            border-radius: 50%;
-            margin-right: 15px;
-            flex-shrink: 0;
+            width: 70px; height: 70px; background: #eee; border-radius: 50%;
+            margin-right: 15px; flex-shrink: 0;
             background-image: url('https://cdn-icons-png.flaticon.com/512/4042/4042356.png');
             background-size: cover;
         }
+        .bubble { font-size: 0.9rem; line-height: 1.5; color: #555; }
 
-        .bubble {
-            font-size: 0.9rem;
-            line-height: 1.5;
-            color: #555;
-        }
-
-        .input-group {
-            text-align: left;
-            margin-bottom: 20px;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: var(--primary);
-            font-size: 0.9rem;
-        }
-
+        .input-group { text-align: left; margin-bottom: 20px; }
+        .input-group label { display: block; margin-bottom: 8px; font-weight: bold; color: var(--primary); font-size: 0.9rem; }
         .input-group input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #eee;
-            border-radius: 12px;
-            font-size: 16px;
-            outline: none;
+            width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 12px;
+            font-size: 16px; outline: none; transition: 0.3s;
         }
-        
-        .input-group input:focus {
-            border-color: var(--primary);
-        }
+        .input-group input:focus { border-color: var(--primary); }
 
-        .btn-start {
+        /* 試算介面樣式 */
+        .calc-title { color: var(--primary); font-size: 1.2rem; margin-bottom: 15px; text-align: center; font-weight: bold; }
+        .ident-tag { font-size: 0.85rem; color: #7f8c8d; text-align: center; margin-bottom: 20px; }
+        
+        .result-card {
+            background: #fdf2e9;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .result-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .result-row:last-child { border-bottom: none; }
+        .label { font-weight: bold; }
+        .val { color: var(--primary); font-weight: bold; }
+
+        .btn-main {
             background: linear-gradient(135deg, #f39c12, #e67e22);
-            color: white;
-            width: 100%;
-            padding: 18px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 10px 20px rgba(230, 126, 34, 0.3);
-            transition: 0.3s;
+            color: white; width: 100%; padding: 18px; border: none;
+            border-radius: 50px; font-size: 1.1rem; font-weight: bold;
+            cursor: pointer; box-shadow: 0 10px 20px rgba(230, 126, 34, 0.3);
             margin-top: 10px;
         }
+        .btn-main:disabled { background: #ccc; box-shadow: none; }
 
-        .btn-start:disabled { background: #ccc; box-shadow: none; cursor: not-allowed; }
-
-        .footer {
-            padding: 20px;
-            font-size: 0.7rem;
-            color: #999;
-            text-align: center;
-            background: #fafafa;
-        }
+        .footer { padding: 20px; font-size: 0.7rem; color: #999; text-align: center; background: #fafafa; }
     </style>
 </head>
 <body>
@@ -136,25 +113,56 @@
 <div class="phone-container">
     <div class="header-bar">R線重點複習：1998 財富觀測站</div>
     
-    <div class="content">
+    <!-- 步驟一：首頁 -->
+    <div class="step active" id="step1">
         <div class="avatar-box">
             <div class="avatar"></div>
             <div class="bubble">
-                你知道「1998」背後的核心邏輯嗎？這不只是一個數字，更是您人生夢想與現實支出的動態平衡點。
+                這不只是一個數字，更是您人生夢想與現實支出的平衡點。請輸入資訊開啟您的財富之旅。
             </div>
         </div>
-
         <div class="input-group">
             <label>通訊處名稱</label>
-            <input type="text" id="unit" placeholder="例如：凱基通訊處" oninput="check()">
+            <input type="text" id="unit" placeholder="例如：凱基通訊處" oninput="validate()">
         </div>
-
         <div class="input-group">
             <label>填寫人姓名</label>
-            <input type="text" id="name" placeholder="請輸入您的姓名" oninput="check()">
+            <input type="text" id="name" placeholder="請輸入您的姓名" oninput="validate()">
         </div>
+        <button class="btn-main" id="startBtn" onclick="goToStep(2)" disabled>✦ 開始您的財富人生試算 ✦</button>
+    </div>
 
-        <button class="btn-start" id="btn" onclick="start()" disabled>✦ 開始您的財富人生試算 ✦</button>
+    <!-- 步驟二：試算結果 -->
+    <div class="step" id="step2">
+        <div class="ident-tag" id="displayIdent"></div>
+        <div class="calc-title">1998 財富試算結果</div>
+        
+        <div class="result-card">
+            <div class="result-row">
+                <span class="label">一輩子預計總收入</span>
+                <span class="val">1,998 萬</span>
+            </div>
+            <div class="result-row">
+                <span class="label">30年基本生活開銷</span>
+                <span class="val">- 540 萬</span>
+            </div>
+            <div class="result-row">
+                <span class="label">理想購屋/置產預算</span>
+                <span class="val">- 1,200 萬</span>
+            </div>
+            <div style="margin-top:15px; border-top: 2px dashed #e67e22; padding-top:15px;">
+                <div class="result-row" style="font-size: 1.1rem;">
+                    <span class="label" style="color:var(--secondary)">剩餘可支配金額</span>
+                    <span class="val" style="color:#27ae60">258 萬</span>
+                </div>
+            </div>
+        </div>
+        
+        <p style="font-size:0.85rem; color:#666; line-height:1.6; text-align:center;">
+            這份數據提醒我們，在追求夢想的同時，穩健的財務規劃與組織發展是提升總收入的關鍵。
+        </p>
+
+        <button class="btn-main" style="background: var(--secondary);" onclick="location.reload()">重新試算</button>
     </div>
 
     <div class="footer">
@@ -163,19 +171,21 @@
 </div>
 
 <script>
-    function check() {
+    function validate() {
         const u = document.getElementById('unit').value.trim();
         const n = document.getElementById('name').value.trim();
-        document.getElementById('btn').disabled = !(u && n);
+        document.getElementById('startBtn').disabled = !(u && n);
     }
 
-    function start() {
-        // 這裡預留跳轉邏輯，目前先以彈窗模擬身分確認
-        const name = document.getElementById('name').value;
-        const unit = document.getElementById('unit').value;
-        alert('身分確認：' + unit + ' - ' + name + '\n系統即將開啟互動試算！');
-        // 如果您希望直接跳轉到 199803.html，請取消下面這行的註解：
-        // window.location.href = '199803.html';
+    function goToStep(s) {
+        if(s === 2) {
+            const u = document.getElementById('unit').value;
+            const n = document.getElementById('name').value;
+            document.getElementById('displayIdent').innerText = u + " / " + n;
+        }
+        document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+        document.getElementById('step' + s).classList.add('active');
+        window.scrollTo(0,0);
     }
 </script>
 
