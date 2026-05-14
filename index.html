@@ -8,7 +8,7 @@
         :root { --m-blue: #003366; --m-orange: #E67E22; --m-bg: #F0F4F8; --m-white: #FFFFFF; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, "PingFang TC", "Microsoft JhengHei", sans-serif; background-color: var(--m-bg); margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; }
-        .container { width: 100%; max-width: 420px; background: var(--m-white); border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; position: relative; height: 820px; }
+        .container { width: 100%; max-width: 420px; background: var(--m-white); border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; position: relative; height: 850px; }
         .header { background: var(--m-blue); color: white; padding: 18px; text-align: center; font-weight: bold; font-size: 1.1rem; border-bottom: 4px solid var(--m-orange); }
         .step { display: none; padding: 20px; flex-direction: column; height: 100%; overflow-y: auto; }
         .step.active { display: flex; animation: slideIn 0.3s ease-out; }
@@ -36,7 +36,7 @@
 <div class="container">
     <div class="header">1998 財富人生互動</div>
     
-    <!-- 首頁 -->
+    <!-- Step 0: Welcome -->
     <div class="step active" id="step0">
         <div class="script-box">
             你有聽過1998嗎？<br>你想想喔，以一個剛畢業的社會新鮮人，起薪三萬是不是還不錯？如果每年保證加薪3%，年薪保證14個月呢？是不是很不錯。那從25歲工作到55歲，30年就是一共賺了1998萬，這就是1998~
@@ -47,7 +47,7 @@
         <button class="btn btn-next" id="startBtn" onclick="nextStep(1)" disabled>開始試算</button>
     </div>
 
-    <!-- 第一題 -->
+    <!-- Step 1: Basic Expense -->
     <div class="step" id="step1">
         <div class="q-title">第一題：基本開銷</div>
         <div class="script-box">賺錢就是要花的，對吧？我們來算算要花掉多少錢喔，首先是基本開銷，你覺得一個月要花多少呢？</div>
@@ -58,76 +58,206 @@
             <div class="stat-line"><span>30年總計：</span><b id="t1">1080 萬</b></div>
         </div>
         <div class="balance-footer">
-            <div class="bal-row"><span class="bal-label">剩下萬元可花：</span><span class="bal-val" id="bal1">918</span></div>
+            <div class="bal-row"><span class="bal-label">剩下萬元可花：</span><span class="bal-val" id="bal1"></span></div>
             <div class="btn-group"><button class="btn btn-back" onclick="prevStep(0)">回首頁</button><button class="btn btn-next" onclick="nextStep(2)">下一題</button></div>
         </div>
     </div>
 
-    <!-- 第二題：買車規劃 -->
+    <!-- Step 2: Car -->
     <div class="step" id="step2">
         <div class="q-title">第二題：買車規劃</div>
         <div class="script-box">那還有哪些開銷呢？是不是會想買車？一台車花多少萬買你覺得比較好？</div>
         <div class="val-display" id="v2_buy">80 萬</div>
         <input type="range" id="q2_buy" min="0" max="400" step="10" value="80" oninput="calculate()">
-        
-        <!-- 黃色框框連動區 - 購車部分 -->
         <div class="stat-card">
             <div class="stat-line"><span>一台車用十年花費：</span><b id="v2_single">80 萬</b></div>
             <div class="stat-line"><span>30年共三台車花費：</span><b id="car30_display" style="color:red;">240 萬</b></div>
         </div>
-
         <div class="divider"></div>
         <div class="script-box">再來，車子買來要加油，要停車位、要稅金等等，一個月多少？</div>
         <div class="val-display" id="v2_maint">0.8 萬</div>
         <input type="range" id="q2_maint" min="0" max="3" step="0.1" value="0.8" oninput="calculate()">
-        
-        <!-- 黃色框框連動區 - 養車總計部分 -->
         <div class="stat-card">
             <div class="stat-line"><span>養車年花費：</span><b id="y2">9.6 萬</b></div>
             <div class="stat-line"><span>養車30年花費總計：</span><b id="t2" style="color:red;">528 萬</b></div>
         </div>
-
         <div class="balance-footer">
             <div class="bal-row"><span class="bal-label">剩下萬元可花：</span><span class="bal-val" id="bal2"></span></div>
             <div class="btn-group"><button class="btn btn-back" onclick="prevStep(1)">上一題</button><button class="btn btn-next" onclick="nextStep(3)">下一題</button></div>
         </div>
     </div>
 
-    <!-- 此處省略後續 3-7 題，保持邏輯不變 -->
+    <!-- Step 3: Wedding -->
+    <div class="step" id="step3">
+        <div class="q-title">第三題：結婚規劃</div>
+        <div class="script-box">接下來人生大事要結婚了，婚紗照片、喜酒桌數扣掉紅包，你覺得要花多少錢？</div>
+        <div class="val-display" id="v3">50 萬</div>
+        <input type="range" id="q3" min="0" max="300" step="10" value="50" oninput="calculate()">
+        <div class="stat-card">
+            <div class="stat-line"><span>結婚預算：</span><b id="t3">50 萬</b></div>
+        </div>
+        <div class="balance-footer">
+            <div class="bal-row"><span class="bal-label">剩下萬元可花：</span><span class="bal-val" id="bal3"></span></div>
+            <div class="btn-group"><button class="btn btn-back" onclick="prevStep(2)">上一題</button><button class="btn btn-next" onclick="nextStep(4)">下一題</button></div>
+        </div>
+    </div>
 
+    <!-- Step 4: Kids -->
+    <div class="step" id="step4">
+        <div class="q-title">第四題：養育孩子</div>
+        <div class="script-box">有了家庭可能會有小孩，養一個小孩到大學畢業，你覺得一個月要花多少錢？</div>
+        <div class="val-display" id="v4">2 萬</div>
+        <input type="range" id="q4" min="0" max="10" step="0.5" value="2" oninput="calculate()">
+        <div class="stat-card">
+            <div class="stat-line"><span>每月教育與生活：</span><b>2.0 萬</b></div>
+            <div class="stat-line"><span>22年養育總計：</span><b id="t4">528 萬</b></div>
+        </div>
+        <div class="balance-footer">
+            <div class="bal-row"><span class="bal-label">剩下萬元可花：</span><span class="bal-val" id="bal4"></span></div>
+            <div class="btn-group"><button class="btn btn-back" onclick="prevStep(3)">上一題</button><button class="btn btn-next" onclick="nextStep(5)">下一題</button></div>
+        </div>
+    </div>
+
+    <!-- Step 5: Parents -->
+    <div class="step" id="step5">
+        <div class="q-title">第五題：孝親與奉養</div>
+        <div class="script-box">那父母養我們這麼大，每個月給父母一點零用錢，你覺得一個月多少？</div>
+        <div class="val-display" id="v5">1 萬</div>
+        <input type="range" id="q5" min="0" max="10" step="0.5" value="1" oninput="calculate()">
+        <div class="stat-card">
+            <div class="stat-line"><span>每月孝親費：</span><b>1.0 萬</b></div>
+            <div class="stat-line"><span>30年總計：</span><b id="t5">360 萬</b></div>
+        </div>
+        <div class="balance-footer">
+            <div class="bal-row"><span class="bal-label">剩下萬元可花：</span><span class="bal-val" id="bal5"></span></div>
+            <div class="btn-group"><button class="btn btn-back" onclick="prevStep(4)">上一題</button><button class="btn btn-next" onclick="nextStep(6)">下一題</button></div>
+        </div>
+    </div>
+
+    <!-- Step 6: Travel -->
+    <div class="step" id="step6">
+        <div class="q-title">第六題：年度旅遊</div>
+        <div class="script-box">人生總要犒賞一下自己，一年帶全家人出國旅遊一次，你覺得預算多少？</div>
+        <div class="val-display" id="v6">10 萬</div>
+        <input type="range" id="q6" min="0" max="100" step="5" value="10" oninput="calculate()">
+        <div class="stat-card">
+            <div class="stat-line"><span>每年旅遊：</span><b>10 萬</b></div>
+            <div class="stat-line"><span>30年總計：</span><b id="t6">300 萬</b></div>
+        </div>
+        <div class="balance-footer">
+            <div class="bal-row"><span class="bal-label">剩下萬元可花：</span><span class="bal-val" id="bal6"></span></div>
+            <div class="btn-group"><button class="btn btn-back" onclick="prevStep(5)">上一題</button><button class="btn btn-next" onclick="nextStep(7)">最後一題</button></div>
+        </div>
+    </div>
+
+    <!-- Step 7: House -->
+    <div class="step" id="step7">
+        <div class="q-title">最後一題：成家買房</div>
+        <div class="script-box">最後也是最重要的一項，我們總要有一個自己的家，買一個房子你覺得預算多少？</div>
+        <div class="val-display" id="v7">1500 萬</div>
+        <input type="range" id="q7" min="0" max="5000" step="50" value="1500" oninput="calculate()">
+        <div class="stat-card">
+            <div class="stat-line"><span>買房預算：</span><b id="t7">1500 萬</b></div>
+        </div>
+        <div class="balance-footer" style="background:#FFF0F0;">
+            <div class="bal-row"><span class="bal-label" style="color:#D32F2F;">最終餘額：</span><span class="bal-val" id="bal7"></span></div>
+            <div class="btn-group"><button class="btn btn-back" onclick="prevStep(6)">上一題</button></div>
+        </div>
+    </div>
 </div>
 
 <script>
-    let currentStep = 0; const income = 1998;
-    function checkStart() { const u = document.getElementById('unit').value.trim(); const n = document.getElementById('name').value.trim(); document.getElementById('startBtn').disabled = !(u && n); }
-    function nextStep(s) { document.getElementById('step' + currentStep).classList.remove('active'); currentStep = s; document.getElementById('step' + s).classList.add('active'); }
-    function prevStep(s) { document.getElementById('step' + currentStep).classList.remove('active'); currentStep = s; document.getElementById('step' + s).classList.add('active'); }
-    
+    let currentStep = 0;
+    const income = 1998;
+
+    function checkStart() {
+        const u = document.getElementById('unit').value.trim();
+        const n = document.getElementById('name').value.trim();
+        document.getElementById('startBtn').disabled = !(u && n);
+    }
+
+    function nextStep(s) {
+        document.getElementById('step' + currentStep).classList.remove('active');
+        currentStep = s;
+        document.getElementById('step' + s).classList.add('active');
+    }
+
+    function prevStep(s) {
+        document.getElementById('step' + currentStep).classList.remove('active');
+        currentStep = s;
+        document.getElementById('step' + s).classList.add('active');
+    }
+
     function calculate() {
-        // 第一題
-        const q1 = parseFloat(document.getElementById('q1').value); const t1 = q1 * 12 * 30;
-        document.getElementById('v1').innerText = q1 + " 萬"; document.getElementById('y1').innerText = (q1 * 12).toFixed(1) + " 萬"; document.getElementById('t1').innerText = t1 + " 萬";
-        
-        // 第二題
-        const q2b = parseInt(document.getElementById('q2_buy').value); 
+        // Q1
+        const q1 = parseFloat(document.getElementById('q1').value);
+        const t1 = q1 * 12 * 30;
+        document.getElementById('v1').innerText = q1 + " 萬";
+        document.getElementById('y1').innerText = (q1 * 12).toFixed(1) + " 萬";
+        document.getElementById('t1').innerText = t1 + " 萬";
+
+        // Q2 (Car)
+        const q2b = parseInt(document.getElementById('q2_buy').value);
         const q2m = parseFloat(document.getElementById('q2_maint').value);
-        const t2b_3 = q2b * 3; 
-        const t2m = q2m * 12 * 30; 
+        const t2b_3 = q2b * 3;
+        const t2m = q2m * 12 * 30;
         const t2_total = t2b_3 + t2m;
-        
         document.getElementById('v2_buy').innerText = q2b + " 萬";
         document.getElementById('v2_single').innerText = q2b + " 萬";
         document.getElementById('car30_display').innerText = t2b_3 + " 萬";
-        
-        document.getElementById('v2_maint').innerText = q2m + " 萬"; 
-        document.getElementById('y2').innerText = (q2m * 12).toFixed(1) + " 萬"; 
+        document.getElementById('v2_maint').innerText = q2m + " 萬";
+        document.getElementById('y2').innerText = (q2m * 12).toFixed(1) + " 萬";
         document.getElementById('t2').innerText = Math.round(t2_total) + " 萬";
-        
-        const b1 = income - t1; const b2 = b1 - t2_total;
+
+        // Q3 (Wedding)
+        const q3 = parseInt(document.getElementById('q3').value);
+        document.getElementById('v3').innerText = q3 + " 萬";
+        document.getElementById('t3').innerText = q3 + " 萬";
+
+        // Q4 (Kids)
+        const q4 = parseFloat(document.getElementById('q4').value);
+        const t4 = q4 * 12 * 22;
+        document.getElementById('v4').innerText = q4 + " 萬";
+        document.getElementById('t4').innerText = Math.round(t4) + " 萬";
+
+        // Q5 (Parents)
+        const q5 = parseFloat(document.getElementById('q5').value);
+        const t5 = q5 * 12 * 30;
+        document.getElementById('v5').innerText = q5 + " 萬";
+        document.getElementById('t5').innerText = Math.round(t5) + " 萬";
+
+        // Q6 (Travel)
+        const q6 = parseInt(document.getElementById('q6').value);
+        const t6 = q6 * 30;
+        document.getElementById('v6').innerText = q6 + " 萬";
+        document.getElementById('t6').innerText = t6 + " 萬";
+
+        // Q7 (House)
+        const q7 = parseInt(document.getElementById('q7').value);
+        document.getElementById('v7').innerText = q7 + " 萬";
+        document.getElementById('t7').innerText = q7 + " 萬";
+
+        // Balance Chain
+        const b1 = income - t1;
+        const b2 = b1 - t2_total;
+        const b3 = b2 - q3;
+        const b4 = b3 - t4;
+        const b5 = b4 - t5;
+        const b6 = b5 - t6;
+        const b7 = b6 - q7;
+
         document.getElementById('bal1').innerText = Math.round(b1);
         document.getElementById('bal2').innerText = Math.round(b2);
-        
-        [1,2].forEach(n => { const el = document.getElementById('bal' + n); el.style.color = parseInt(el.innerText) < 0 ? "red" : "#E67E22"; });
+        document.getElementById('bal3').innerText = Math.round(b3);
+        document.getElementById('bal4').innerText = Math.round(b4);
+        document.getElementById('bal5').innerText = Math.round(b5);
+        document.getElementById('bal6').innerText = Math.round(b6);
+        document.getElementById('bal7').innerText = Math.round(b7);
+
+        for(let i=1; i<=7; i++) {
+            const el = document.getElementById('bal' + i);
+            if(el) el.style.color = parseInt(el.innerText) < 0 ? "red" : "#E67E22";
+        }
     }
     calculate();
 </script>
