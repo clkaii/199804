@@ -59,7 +59,8 @@
         <div class="script-box">那還有哪些開銷呢？是不是會想買車？一台車花多少萬買你覺得比較好？</div>
         <div class="val-display" id="v2_buy">80 萬</div>
         <input type="range" id="q2_buy" min="0" max="400" step="10" value="80" oninput="calculate()">
-        <div id="car30_msg" style="font-size:0.85rem; color:var(--m-blue); margin-top:10px; text-align:center;">然後一台車我們抓開10年再換，30年就需要三台車，這樣一共就是 240 萬</div>
+        <!-- 修改後的文字區塊 -->
+        <div id="car30_msg" style="font-size:0.85rem; color:var(--m-blue); margin-top:10px; text-align:center;">一台車用十年花費：80 萬<br>三十年花費：依互動乘三</div>
         <div class="divider"></div>
         <div class="script-box">再來，車子買來要加油，要停車位、要稅金等等，一個月多少？</div>
         <div class="val-display" id="v2_maint">0.8 萬</div>
@@ -124,7 +125,9 @@
         document.getElementById('v1').innerText = q1 + " 萬"; document.getElementById('y1').innerText = (q1 * 12).toFixed(1) + " 萬"; document.getElementById('t1').innerText = t1 + " 萬";
         const q2b = parseInt(document.getElementById('q2_buy').value); const q2m = parseFloat(document.getElementById('q2_maint').value);
         const t2b_3 = q2b * 3; const t2m = q2m * 12 * 30; const t2 = t2b_3 + t2m;
-        document.getElementById('v2_buy').innerText = q2b + " 萬"; document.getElementById('car30_msg').innerText = "然後一台車我們抓開10年再換，30年就需要三台車，這樣一共就是 " + t2b_3 + " 萬";
+        document.getElementById('v2_buy').innerText = q2b + " 萬"; 
+        // 同步更新顯示文字
+        document.getElementById('car30_msg').innerHTML = "一台車用十年花費：" + q2b + " 萬<br>三十年花費：依互動乘三";
         document.getElementById('v2_maint').innerText = q2m + " 萬"; document.getElementById('y2').innerText = (q2m * 12).toFixed(1) + " 萬"; document.getElementById('t2').innerText = Math.round(t2) + " 萬";
         const q3 = parseInt(document.getElementById('q3').value); document.getElementById('v3').innerText = q3 + " 萬"; document.getElementById('y3').innerText = (q3 / 30).toFixed(1) + " 萬"; document.getElementById('t3').innerText = q3 + " 萬";
         const q4 = parseInt(document.getElementById('q4').value); document.getElementById('v4').innerText = q4 + " 萬"; document.getElementById('y4').innerText = (q4 / 30).toFixed(1) + " 萬"; document.getElementById('t4').innerText = q4 + " 萬";
