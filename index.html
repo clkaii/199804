@@ -70,7 +70,7 @@
         <div class="val-display" id="v2_buy">80 萬</div>
         <input type="range" id="q2_buy" min="0" max="400" step="10" value="80" oninput="calculate()">
         
-        <!-- 黃色框框連動區 -->
+        <!-- 黃色框框連動區 - 購車部分 -->
         <div class="stat-card">
             <div class="stat-line"><span>一台車用十年花費：</span><b id="v2_single">80 萬</b></div>
             <div class="stat-line"><span>30年共三台車花費：</span><b id="car30_display" style="color:red;">240 萬</b></div>
@@ -81,9 +81,10 @@
         <div class="val-display" id="v2_maint">0.8 萬</div>
         <input type="range" id="q2_maint" min="0" max="3" step="0.1" value="0.8" oninput="calculate()">
         
+        <!-- 黃色框框連動區 - 養車總計部分 -->
         <div class="stat-card">
             <div class="stat-line"><span>養車年花費：</span><b id="y2">9.6 萬</b></div>
-            <div class="stat-line"><span>(購車x3+養車)總計：</span><b id="t2">528 萬</b></div>
+            <div class="stat-line"><span>養車30年花費總計：</span><b id="t2" style="color:red;">528 萬</b></div>
         </div>
 
         <div class="balance-footer">
@@ -92,8 +93,7 @@
         </div>
     </div>
 
-    <!-- 之後題目的結構以此類推... (略) -->
-    <!-- (這裡包含 第三題到第七題，代碼邏輯與您原本提供的一致) -->
+    <!-- 此處省略後續 3-7 題，保持邏輯不變 -->
 
 </div>
 
@@ -104,27 +104,26 @@
     function prevStep(s) { document.getElementById('step' + currentStep).classList.remove('active'); currentStep = s; document.getElementById('step' + s).classList.add('active'); }
     
     function calculate() {
-        // 第一題計算
+        // 第一題
         const q1 = parseFloat(document.getElementById('q1').value); const t1 = q1 * 12 * 30;
         document.getElementById('v1').innerText = q1 + " 萬"; document.getElementById('y1').innerText = (q1 * 12).toFixed(1) + " 萬"; document.getElementById('t1').innerText = t1 + " 萬";
         
-        // 第二題計算：購車乘三連動
+        // 第二題
         const q2b = parseInt(document.getElementById('q2_buy').value); 
         const q2m = parseFloat(document.getElementById('q2_maint').value);
-        const t2b_3 = q2b * 3; // 三台車總價
+        const t2b_3 = q2b * 3; 
         const t2m = q2m * 12 * 30; 
-        const t2 = t2b_3 + t2m;
+        const t2_total = t2b_3 + t2m;
         
         document.getElementById('v2_buy').innerText = q2b + " 萬";
         document.getElementById('v2_single').innerText = q2b + " 萬";
-        document.getElementById('car30_display').innerText = t2b_3 + " 萬"; // 修改文字並秀出乘三結果
+        document.getElementById('car30_display').innerText = t2b_3 + " 萬";
         
         document.getElementById('v2_maint').innerText = q2m + " 萬"; 
         document.getElementById('y2').innerText = (q2m * 12).toFixed(1) + " 萬"; 
-        document.getElementById('t2').innerText = Math.round(t2) + " 萬";
+        document.getElementById('t2').innerText = Math.round(t2_total) + " 萬";
         
-        // 餘額連動
-        const b1 = income - t1; const b2 = b1 - t2;
+        const b1 = income - t1; const b2 = b1 - t2_total;
         document.getElementById('bal1').innerText = Math.round(b1);
         document.getElementById('bal2').innerText = Math.round(b2);
         
