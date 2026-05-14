@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>1998 財富人生 V10</title>
+    <title>1998 財富人生 V9</title>
     <style>
         :root { --m-blue: #003366; --m-orange: #E67E22; --m-bg: #F0F4F8; --m-white: #FFFFFF; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, "PingFang TC", "Microsoft JhengHei", sans-serif; background-color: var(--m-bg); margin: 0; padding: 10px; display: flex; justify-content: center; min-height: 100vh; }
-        .container { width: 100%; max-width: 420px; background: var(--m-white); border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; position: relative; height: 850px; }
+        .container { width: 100%; max-width: 420px; background: var(--m-white); border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; position: relative; height: 820px; }
         .header { background: var(--m-blue); color: white; padding: 18px; text-align: center; font-weight: bold; font-size: 1.1rem; border-bottom: 4px solid var(--m-orange); }
         .step { display: none; padding: 20px; flex-direction: column; height: 100%; overflow-y: auto; }
         .step.active { display: flex; animation: slideIn 0.3s ease-out; }
@@ -18,6 +18,9 @@
         .val-display { color: var(--m-orange); font-size: 1.3rem; font-weight: bold; text-align: center; margin: 8px 0; }
         input[type=range] { width: 100%; height: 8px; border-radius: 5px; background: #DDD; outline: none; -webkit-appearance: none; margin-bottom: 5px; }
         input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 26px; height: 26px; border-radius: 50%; background: var(--m-orange); cursor: pointer; border: 3px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.15); }
+        .stat-card { background: #FFFBE6; border: 1px solid #FFE58F; padding: 12px; border-radius: 10px; margin: 10px 0; }
+        .stat-line { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 3px; color: #666; }
+        .stat-line b { color: var(--m-blue); }
         .balance-footer { margin-top: auto; padding: 15px; border-top: 1px solid #EEE; background: #FAFAFA; }
         .bal-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .bal-label { font-weight: bold; color: #777; font-size: 0.9rem; }
@@ -26,49 +29,120 @@
         .btn { flex: 1; padding: 14px; border: none; border-radius: 50px; font-weight: bold; font-size: 0.95rem; cursor: pointer; }
         .btn-next { background: var(--m-blue); color: white; }
         .btn-back { background: #EEE; color: #666; }
+        .btn:disabled { background: #CCC; cursor: not-allowed; }
+        .divider { border-top: 1px dashed #DDD; margin: 15px 0; }
+        .report-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #EEE; font-size: 0.85rem; }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">1998 財富人生互動</div>
-    <!-- 首頁 -->
     <div class="step active" id="step0">
         <div class="script-box">
-            你有聽過1998嗎？<br><br>
-            你想想喔，以一個剛畢業的社會新鮮人，起薪三萬是不是還不錯？如果每年保證加薪3%，年薪保證14個月呢？是不是很不錯。<br><br>
-            那從25歲工作到55歲，30年就是一共賺了1998萬，這就是1998~
+            你有聽過1998嗎？<br>你想想喔，以一個剛畢業的社會新鮮人，起薪三萬是不是還不錯？如果每年保證加薪3%，年薪保證14個月呢？是不是很不錯。那從25歲工作到55歲，30年就是一共賺了1998萬，這就是1998~
         </div>
-        <div style="margin-bottom:12px;"><label style="font-weight:bold; font-size:0.9rem;">您的姓名</label><input type="text" id="name" style="width:100%; padding:10px; border:1px solid #DDD; border-radius:8px;"></div>
+        <div style="margin-bottom:12px;"><label style="display:block; font-weight:bold; margin-bottom:5px; font-size:0.9rem;">通訊處</label><input type="text" id="unit" style="width:100%; padding:10px; border:1px solid #DDD; border-radius:8px;" oninput="checkStart()"></div>
+        <div style="margin-bottom:12px;"><label style="display:block; font-weight:bold; margin-bottom:5px; font-size:0.9rem;">姓名</label><input type="text" id="name" style="width:100%; padding:10px; border:1px solid #DDD; border-radius:8px;" oninput="checkStart()"></div>
         <div style="flex-grow:1"></div>
-        <button class="btn btn-next" onclick="nextStep(1)">開始體驗</button>
+        <button class="btn btn-next" id="startBtn" onclick="nextStep(1)" disabled>開始試算</button>
     </div>
-
-    <!-- 買車規劃 -->
+    <div class="step" id="step1">
+        <div class="q-title">第一題：基本開銷</div>
+        <div class="script-box">賺錢就是要花的，對吧？我們來算算要花掉多少錢喔，首先是基本開銷，你覺得在台北食衣住行加上手機通訊等等，一個月要花多少呢？</div>
+        <div class="val-display" id="v1">3 萬</div>
+        <input type="range" id="q1" min="1" max="15" step="0.5" value="3" oninput="calculate()">
+        <div class="stat-card"><div class="stat-line"><span>每年開銷：</span><b id="y1">36 萬</b></div><div class="stat-line"><span>30年總計：</span><b id="t1">1080 萬</b></div></div>
+        <div class="balance-footer"><div class="bal-row"><span class="bal-label">剩下萬元可花：</span><span class="bal-val" id="bal1">918</span></div><div class="btn-group"><button class="btn btn-back" onclick="prevStep(0)">回首頁</button><button class="btn btn-next" onclick="nextStep(2)">下一題</button></div></div>
+    </div>
     <div class="step" id="step2">
-        <div class="q-title">買車規劃</div>
+        <div class="q-title">第二題：買車規劃</div>
         <div class="script-box">那還有哪些開銷呢？是不是會想買車？一台車花多少萬買你覺得比較好？</div>
-        <div class="val-display" id="v_car_buy">80 萬</div>
-        <input type="range" id="q_car_buy" min="0" max="400" step="10" value="80" oninput="calculate()">
-        <div id="car_msg" style="font-size:0.9rem; color:var(--m-blue); font-weight:bold; margin: 10px 0; text-align:center; background:#E6F7FF; padding:10px; border-radius:8px;">
-            然後一台車我們抓開10年再換，30年就需要三台車，這樣一共就是 240 萬
+        <div class="val-display" id="v2_buy">80 萬</div>
+        <input type="range" id="q2_buy" min="0" max="400" step="10" value="80" oninput="calculate()">
+        <div id="car30_msg" style="font-size:0.85rem; color:var(--m-blue); margin-top:10px; text-align:center;">然後一台車我們抓開10年再換，30年就需要三台車，這樣一共就是 240 萬</div>
+        <div class="divider"></div>
+        <div class="script-box">再來，車子買來要加油，要停車位、要稅金等等，一個月多少？</div>
+        <div class="val-display" id="v2_maint">0.8 萬</div>
+        <input type="range" id="q2_maint" min="0" max="3" step="0.1" value="0.8" oninput="calculate()">
+        <div class="stat-card"><div class="stat-line"><span>養車年花費：</span><b id="y2">9.6 萬</b></div><div class="stat-line"><span>(購車x3+養車)總計：</span><b id="t2">528 萬</b></div></div>
+        <div class="balance-footer"><div class="bal-row"><span class="bal-label">剩下萬元可花：</span><span class="bal-val" id="bal2"></span></div><div class="btn-group"><button class="btn btn-back" onclick="prevStep(1)">上一題</button><button class="btn btn-next" onclick="nextStep(3)">下一題</button></div></div>
+    </div>
+    <div class="step" id="step3">
+        <div class="q-title">第三題：出國旅遊</div>
+        <div class="script-box">每年帶家人出國旅遊、國內度假，這輩子你希望花多少預算在旅遊上呢？</div>
+        <div class="val-display" id="v3">150 萬</div>
+        <input type="range" id="q3" min="0" max="500" step="10" value="150" oninput="calculate()">
+        <div class="stat-card"><div class="stat-line"><span>平均年預算：</span><b id="y3">5 萬</b></div><div class="stat-line"><span>30年總計：</span><b id="t3">150 萬</b></div></div>
+        <div class="balance-footer"><div class="bal-row"><span class="bal-label">剩下萬元可花：</span><span class="bal-val" id="bal3"></span></div><div class="btn-group"><button class="btn btn-back" onclick="prevStep(2)">上一題</button><button class="btn btn-next" onclick="nextStep(4)">下一題</button></div></div>
+    </div>
+    <div class="step" id="step4">
+        <div class="q-title">第四題：買房規劃</div>
+        <div class="script-box">在台北成家立業，買房的頭期款加上分期貸款與利息，這輩子你預計要在房產支出多少？</div>
+        <div class="val-display" id="v4">1200 萬</div>
+        <input type="range" id="q4" min="500" max="3500" step="50" value="1200" oninput="calculate()">
+        <div class="stat-card"><div class="stat-line"><span>平均年攤提：</span><b id="y4">40 萬</b></div><div class="stat-line"><span>30年總計：</span><b id="t4">1200 萬</b></div></div>
+        <div class="balance-footer"><div class="bal-row"><span class="bal-label">剩下萬元可花：</span><span class="bal-val" id="bal4"></span></div><div class="btn-group"><button class="btn btn-back" onclick="prevStep(3)">上一題</button><button class="btn btn-next" onclick="nextStep(5)">下一題</button></div></div>
+    </div>
+    <div class="step" id="step5">
+        <div class="q-title">第五題：養一個小孩</div>
+        <div class="script-box">從出生到大學畢業，養一個小孩你覺得至少要準備多少？</div>
+        <div class="val-display" id="v5">500 萬</div>
+        <input type="range" id="q5" min="0" max="1500" step="50" value="500" oninput="calculate()">
+        <div class="stat-card"><div class="stat-line"><span>平均年負擔：</span><b id="y5">16.7 萬</b></div><div class="stat-line"><span>總計開銷：</span><b id="t5">500 萬</b></div></div>
+        <div class="balance-footer"><div class="bal-row"><span class="bal-label">剩下萬元可花：</span><span class="bal-val" id="bal5"></span></div><div class="btn-group"><button class="btn btn-back" onclick="prevStep(4)">上一題</button><button class="btn btn-next" onclick="nextStep(6)">下一題</button></div></div>
+    </div>
+    <div class="step" id="step6">
+        <div class="q-title">第六題：退休金準備</div>
+        <div class="script-box">為了享受有尊嚴的退休生活，這輩子該存下多少退休金？</div>
+        <div class="val-display" id="v6">800 萬</div>
+        <input type="range" id="q6" min="0" max="2000" step="50" value="800" oninput="calculate()">
+        <div class="stat-card"><div class="stat-line"><span>每年應儲蓄：</span><b id="y6">26.7 萬</b></div><div class="stat-line"><span>目標總計：</span><b id="t6">800 萬</b></div></div>
+        <div class="balance-footer"><div class="bal-row"><span class="bal-label">剩下萬元可花：</span><span class="bal-val" id="bal6"></span></div><div class="btn-group"><button class="btn btn-back" onclick="prevStep(5)">上一題</button><button class="btn btn-next" onclick="nextStep(7)">總結報告</button></div></div>
+    </div>
+    <div class="step" id="step7">
+        <div id="res_header" style="text-align:center; margin-bottom:15px; font-weight:bold;"></div>
+        <div style="background:var(--m-blue); color:white; border-radius:15px; padding:15px;">
+            <div class="report-item"><span>1998 預計總收入</span><span>1,998 萬</span></div>
+            <div class="report-item"><span>基本開銷 (30年)</span><span id="r1"></span></div>
+            <div class="report-item"><span>車輛開銷 (3台+養車)</span><span id="r2"></span></div>
+            <div class="report-item"><span>旅遊預算</span><span id="r3"></span></div>
+            <div class="report-item"><span>房產支出</span><span id="r4"></span></div>
+            <div class="report-item"><span>養育小孩</span><span id="r5"></span></div>
+            <div class="report-item"><span>退休金準備</span><span id="r6"></span></div>
+            <div class="report-item" style="border:none; margin-top:10px; font-size:1.1rem; font-weight:bold;"><span>最終餘額</span><span id="rf"></span></div>
         </div>
-        <div class="balance-footer">
-            <div class="bal-row"><span class="bal-label">剩下萬元可花：</span><span class="bal-val" id="bal_car"></span></div>
-            <div class="btn-group"><button class="btn btn-back" onclick="prevStep(0)">回首頁</button><button class="btn btn-next" onclick="alert('檔案測試完成，可直接寄出！')">下一題</button></div>
-        </div>
+        <button class="btn btn-next" style="background:var(--m-orange); margin-top:20px;" onclick="location.reload()">重新試算</button>
     </div>
 </div>
-
 <script>
     let currentStep = 0; const income = 1998;
-    function nextStep(s) { document.getElementById('step' + currentStep).classList.remove('active'); currentStep = s; document.getElementById('step' + s).classList.add('active'); calculate(); }
+    function checkStart() { const u = document.getElementById('unit').value.trim(); const n = document.getElementById('name').value.trim(); document.getElementById('startBtn').disabled = !(u && n); }
+    function nextStep(s) { document.getElementById('step' + currentStep).classList.remove('active'); currentStep = s; document.getElementById('step' + s).classList.add('active'); if(s === 7) finalize(); }
     function prevStep(s) { document.getElementById('step' + currentStep).classList.remove('active'); currentStep = s; document.getElementById('step' + s).classList.add('active'); }
     function calculate() {
-        const carPrice = parseInt(document.getElementById('q_car_buy').value);
-        document.getElementById('v_car_buy').innerText = carPrice + " 萬";
-        document.getElementById('car_msg').innerText = "然後一台車我們抓開10年再換，30年就需要三台車，這樣一共就是 " + (carPrice * 3) + " 萬";
-        document.getElementById('bal_car').innerText = Math.round(income - (carPrice * 3) - 1200); // 扣除假設的基本預算
+        const q1 = parseFloat(document.getElementById('q1').value); const t1 = q1 * 12 * 30;
+        document.getElementById('v1').innerText = q1 + " 萬"; document.getElementById('y1').innerText = (q1 * 12).toFixed(1) + " 萬"; document.getElementById('t1').innerText = t1 + " 萬";
+        const q2b = parseInt(document.getElementById('q2_buy').value); const q2m = parseFloat(document.getElementById('q2_maint').value);
+        const t2b_3 = q2b * 3; const t2m = q2m * 12 * 30; const t2 = t2b_3 + t2m;
+        document.getElementById('v2_buy').innerText = q2b + " 萬"; document.getElementById('car30_msg').innerText = "然後一台車我們抓開10年再換，30年就需要三台車，這樣一共就是 " + t2b_3 + " 萬";
+        document.getElementById('v2_maint').innerText = q2m + " 萬"; document.getElementById('y2').innerText = (q2m * 12).toFixed(1) + " 萬"; document.getElementById('t2').innerText = Math.round(t2) + " 萬";
+        const q3 = parseInt(document.getElementById('q3').value); document.getElementById('v3').innerText = q3 + " 萬"; document.getElementById('y3').innerText = (q3 / 30).toFixed(1) + " 萬"; document.getElementById('t3').innerText = q3 + " 萬";
+        const q4 = parseInt(document.getElementById('q4').value); document.getElementById('v4').innerText = q4 + " 萬"; document.getElementById('y4').innerText = (q4 / 30).toFixed(1) + " 萬"; document.getElementById('t4').innerText = q4 + " 萬";
+        const q5 = parseInt(document.getElementById('q5').value); document.getElementById('v5').innerText = q5 + " 萬"; document.getElementById('y5').innerText = (q5 / 30).toFixed(1) + " 萬"; document.getElementById('t5').innerText = q5 + " 萬";
+        const q6 = parseInt(document.getElementById('q6').value); document.getElementById('v6').innerText = q6 + " 萬"; document.getElementById('y6').innerText = (q6 / 30).toFixed(1) + " 萬"; document.getElementById('t6').innerText = q6 + " 萬";
+        const b1 = income - t1; const b2 = b1 - t2; const b3 = b2 - q3; const b4 = b3 - q4; const b5 = b4 - q5; const b6 = b5 - q6;
+        document.getElementById('bal1').innerText = Math.round(b1); document.getElementById('bal2').innerText = Math.round(b2); document.getElementById('bal3').innerText = Math.round(b3); document.getElementById('bal4').innerText = Math.round(b4); document.getElementById('bal5').innerText = Math.round(b5); document.getElementById('bal6').innerText = Math.round(b6);
+        [1,2,3,4,5,6].forEach(n => { const el = document.getElementById('bal' + n); const val = parseInt(el.innerText); el.style.color = val < 0 ? "#FF4D4F" : "#E67E22"; });
     }
+    function finalize() {
+        const u = document.getElementById('unit').value; const n = document.getElementById('name').value; document.getElementById('res_header').innerText = u + " / " + n;
+        const q1 = parseFloat(document.getElementById('q1').value) * 12 * 30; const q2 = (parseInt(document.getElementById('q2_buy').value)*3) + (parseFloat(document.getElementById('q2_maint').value)*12*30);
+        const q3 = parseInt(document.getElementById('q3').value); const q4 = parseInt(document.getElementById('q4').value); const q5 = parseInt(document.getElementById('q5').value); const q6 = parseInt(document.getElementById('q6').value);
+        const fin = income - q1 - q2 - q3 - q4 - q5 - q6;
+        document.getElementById('r1').innerText = "- " + Math.round(q1) + " 萬"; document.getElementById('r2').innerText = "- " + Math.round(q2) + " 萬"; document.getElementById('r3').innerText = "- " + q3 + " 萬"; document.getElementById('r4').innerText = "- " + q4 + " 萬"; document.getElementById('r5').innerText = "- " + q5 + " 萬"; document.getElementById('r6').innerText = "- " + q6 + " 萬";
+        const rf = document.getElementById('rf'); rf.innerText = Math.round(fin) + " 萬"; rf.style.color = fin < 0 ? "#FF7675" : "#2ECC71";
+    }
+    calculate();
 </script>
 </body>
 </html>
